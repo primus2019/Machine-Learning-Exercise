@@ -4,8 +4,8 @@ from pandas import Series, DataFrame
 import numpy as np
 
 def train():
-    labels   = pd.read_csv(r'C:\Primus\Codes\Python\Machine-Learning-Exercise\exercise_1\data1\train_10gene_label_sub.csv')
-    features = pd.read_csv(r'C:\Primus\Codes\Python\Machine-Learning-Exercise\exercise_1\data1\train_10gene_sub.csv')
+    labels   = pd.read_csv(r'C:\Primus\Codes\Python\Machine-Learning-Exercise\exercise_1\data1\train_label.csv')
+    features = pd.read_csv(r'C:\Primus\Codes\Python\Machine-Learning-Exercise\exercise_1\data1\train_10gene.csv')
 
     samples     = features.iloc[:,1:]
     max_sample_num = len(features.columns) - 1
@@ -25,10 +25,10 @@ def train():
 
     weight = Series(np.ones(shape=(11)))
     memo = [0 for _ in range(40)]
-    learning_rate = 0.00005
+    learning_rate = 0.005
     sample_num  = 0
     record = [0 for _ in range(max_sample_num)]
-    while sample_num < 50000:
+    while sample_num < 10000:
         temp = weight
         discriminant = np.dot(weight[1:], samples.iloc[:, sample_num % max_sample_num]) + weight[0]
         if sample_num % 2000 == 0:
