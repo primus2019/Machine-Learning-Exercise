@@ -4,8 +4,8 @@ from pandas import Series, DataFrame
 import numpy as np
 
 def train():
-    labels   = pd.read_csv(r'C:\Primus\Codes\Python\Machine-Learning-Exercise\exercise_1\data1\train_10gene_label_sub.csv')
-    features = pd.read_csv(r'C:\Primus\Codes\Python\Machine-Learning-Exercise\exercise_1\data1\train_10gene_sub.csv')
+    labels   = pd.read_csv(r'C:\Primus\Codes\Python\Machine-Learning-Exercise\exercise_1\data1\train_label.csv')
+    features = pd.read_csv(r'C:\Primus\Codes\Python\Machine-Learning-Exercise\exercise_1\data1\train_10gene.csv')
 
     samples     = features.iloc[:,1:]
     max_sample_num = len(features.columns) - 1
@@ -22,17 +22,17 @@ def train():
     learning_rate = 0.005
     sample_num  = 0
     record = [0 for _ in range(max_sample_num)]
-    with open('variable_increment_train.log', 'w+') as file:
-        while True:
+    with open('variable_increment_train_2.log', 'a+') as file:
+        while sample_num < 10001:
             temp = weight
             discriminant = np.dot(weight[1:], samples.iloc[:, sample_num % max_sample_num]) + weight[0]
-            if sample_num % 1000 == 0:
+            if sample_num % 2000 == 0:
                 file.write('----------------------------\n')
                 file.write('iteration '      + (str)(sample_num) + '\n')
                 file.write('discriminant: '  + (str)(discriminant) + '\n')
                 file.write('weight: '        + (str)(weight) + '\n')
             # check if valid
-            if np.abs(discriminant) < 10:
+            if np.abs(discriminant) < 0.01:
                 record[sample_num % max_sample_num] = 1
                 valid = True
                 for i in record:
@@ -48,7 +48,7 @@ def train():
                 prediction = 1
             else:
                 prediction = 0
-            weight[1:] += learning_rate*np.dot((activations[sample_num % max_sample_num] - prediction), samples.iloc[:, sample_num % max_sample_num])/(sample_num % 10000 + 1)
+            weight[1:] += learning_rate*np.dot((activations[sample_num % max_sample_num] - prediction), samples.iloc[:, sample_num % max_sample_num])
             weight[0]  += learning_rate*(activations[sample_num % max_sample_num] - prediction)
 
             sample_num += 1
@@ -61,13 +61,19 @@ def test(weight, features_path, labels_path):
     labels   = pd.read_csv(labels_path)
     max_sample_num = len(features.columns) - 1
 
-    samples     = features.iloc[:,1:]
-        
+    samples  = features.iloc[:,1:]
+    
+    for index, row in labels.iterrows():
+        if row[1] == 'endothelial cell':
+            if row[0] in samples.columns:
+                samples[row[0]] = samples[row[0]]
+                # print(row[0] + ' changed')
+    
     sample_num = 0
     error, total = 0, 0
-    with open('variable_increment_test.log', 'w+') as file:
-        file.write('featrues_path: ' + features_path + '\n')
-        file.write('labels_path: ' + labels_path + '\n')
+    with open('variable_increment_test_2.log', 'a+') as file:
+        file.write('features_path: ' + (str)(features_path) + '\n')
+        file.write('labels_path: ' + (str)(labels_path) + '\n')
         while True:
             total += 1
 
@@ -94,9 +100,11 @@ def test(weight, features_path, labels_path):
                 break
     
 
+
+
 if __name__ == '__main__':
-    open('variable_increment_train.log', 'w') .close()
-    open('variable_increment_test.log', 'w').close()
+    open('variable_increment_train_2.log', 'w').close()
+    open('variable_increment_test_2.log', 'w').close()
     weight = train()
     test(
         weight, 
