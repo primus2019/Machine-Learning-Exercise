@@ -1,11 +1,11 @@
-# perceptron with fixed increment rule
+import os
 import pandas as pd
 from pandas import Series, DataFrame
 import numpy as np
 
-def train():
-    labels   = pd.read_csv(r'C:\Primus\Codes\Python\Machine-Learning-Exercise\exercise_1\data1\train_10gene_label_sub.csv')
-    features = pd.read_csv(r'C:\Primus\Codes\Python\Machine-Learning-Exercise\exercise_1\data1\train_10gene_sub.csv')
+def train(features_path, labels_path):
+    labels   = pd.read_csv(labels_path)
+    features = pd.read_csv(features_path)
 
     samples     = features.iloc[:,1:]
     max_sample_num = len(features.columns) - 1
@@ -95,9 +95,12 @@ def test(weight, features_path, labels_path):
     
 
 if __name__ == '__main__':
-    open('variable_increment_train.log', 'w') .close()
+    open('variable_increment_train.log', 'w').close()
     open('variable_increment_test.log', 'w').close()
-    weight = train()
+    weight = train(
+        r'C:\Primus\Codes\Python\Machine-Learning-Exercise\exercise_1\data1\train_10gene_sub.csv',
+        r'C:\Primus\Codes\Python\Machine-Learning-Exercise\exercise_1\data1\train_10gene_label_sub.csv'
+        )
     test(
         weight, 
         r'C:\Primus\Codes\Python\Machine-Learning-Exercise\exercise_1\data1\train_10gene.csv',

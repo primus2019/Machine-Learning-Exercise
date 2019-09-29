@@ -3,9 +3,9 @@ import pandas as pd
 from pandas import Series, DataFrame
 import numpy as np
 
-def train():
-    labels   = pd.read_csv(r'C:\Primus\Codes\Python\Machine-Learning-Exercise\exercise_1\data1\train_label.csv')
-    features = pd.read_csv(r'C:\Primus\Codes\Python\Machine-Learning-Exercise\exercise_1\data1\train_10gene.csv')
+def train(features_path, labels_path):
+    labels   = pd.read_csv(labels_path)
+    features = pd.read_csv(features_path)
 
     samples     = features.iloc[:,1:]
     max_sample_num = len(features.columns) - 1
@@ -98,14 +98,15 @@ def test(weight, features_path, labels_path):
             if sample_num == max_sample_num:
                 file.write('error rate: ' + (str)(error / total) + '\n')
                 break
-    
-
 
 
 if __name__ == '__main__':
     open('variable_increment_train_2.log', 'w').close()
     open('variable_increment_test_2.log', 'w').close()
-    weight = train()
+    weight = train(
+        r'C:\Primus\Codes\Python\Machine-Learning-Exercise\exercise_1\data1\train_10gene.csv',
+        r'C:\Primus\Codes\Python\Machine-Learning-Exercise\exercise_1\data1\train_label.csv'
+        )
     test(
         weight, 
         r'C:\Primus\Codes\Python\Machine-Learning-Exercise\exercise_1\data1\train_10gene.csv',
