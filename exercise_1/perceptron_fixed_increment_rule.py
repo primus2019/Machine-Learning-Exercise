@@ -93,8 +93,8 @@ def test(weight, features_path, labels_path):
 
 
 if __name__ == '__main__':
-    open(r'fixed_increment_train.log', 'w').close()
-    open(r'fixed_increment_test.log', 'w').close()
+    open(r'log/fixed_increment_train.log', 'w').close()
+    open(r'log/fixed_increment_test.log', 'w').close()
     weight = train(
         r'C:\Primus\Codes\Python\Machine-Learning-Exercise\exercise_1\data1\train_10gene_sub.csv',
         r'C:\Primus\Codes\Python\Machine-Learning-Exercise\exercise_1\data1\train_10gene_label_sub.csv'
