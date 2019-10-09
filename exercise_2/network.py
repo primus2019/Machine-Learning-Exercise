@@ -8,8 +8,8 @@ class MLP:
         self.output_size    = output_size
         self.hidden_size_1  = hidden_size_1
         self.hidden_size_2  = hidden_size_2
-        self.w1     = np.random.random((self.hidden_size_1, self.input_size+1)) * 0.3
-        self.w2     = np.random.random((self.hidden_size_2, self.hidden_size_1+1)) * 0.3
+        self.w1     = np.random.random((self.hidden_size_1, self.input_size+1))*0.3
+        self.w2     = np.random.random((self.hidden_size_2, self.hidden_size_1+1))*0.3
         self.w3     = np.random.random((self.output_size,   self.hidden_size_2+1))*0.3
         
         self.lr = learning_rate
@@ -18,21 +18,45 @@ class MLP:
     def forward(self, x):
         bias = np.ones((1,x.shape[1]), dtype=x.dtype)
         self.x1 = np.r_[bias,x] 
-        assert self.x1.shape[0] == self.w1.shape[1], "w1 size don't match!"
+        assert self.x1.shape[0] == self.w1.shape[1], "w1 size error"
         self.a1 = np.dot(self.w1,self.x1)
         self.y1 = sigmoid(self.a1)
         bias = np.ones((1,self.y1.shape[1]), dtype=x.dtype)
         self.x2 = np.r_[bias,self.y1] 
-        assert self.x2.shape[0] == self.w2.shape[1], "w2 size don't match!"
+        assert self.x2.shape[0] == self.w2.shape[1], "w2 size error"
         self.a2 = np.dot(self.w2,self.x2)
         self.y2 = sigmoid(self.a2)
         bias = np.ones((1,self.y2.shape[1]), dtype=x.dtype)
         self.x3 = np.r_[bias,self.y2]
-        assert self.x3.shape[0] == self.w3.shape[1], "w2 size don't match!"
+        assert self.x3.shape[0] == self.w3.shape[1], "w2 size error"
         self.a3 =  np.dot(self.w3, self.x3) 
         self.y3 = sigmoid(self.a3)
-
+        
         return self.y3
+
+    def test(self, x):
+        x1_t, a1_t, y1_t, x2_t, a2_t, y2_t, x3_t, a3_t, y3_t = self.x1, self.a1, self.y1, self.x2, self.a2, self.y2, self.x3, self.a3, self.y3
+
+        bias = np.ones((1,x.shape[1]), dtype=x.dtype)
+        self.x1 = np.r_[bias,x] 
+        assert self.x1.shape[0] == self.w1.shape[1], "w1 size error!"
+        self.a1 = np.dot(self.w1,self.x1)
+        self.y1 = sigmoid(self.a1)
+        bias = np.ones((1,self.y1.shape[1]), dtype=x.dtype)
+        self.x2 = np.r_[bias,self.y1] 
+        assert self.x2.shape[0] == self.w2.shape[1], "w2 size error!"
+        self.a2 = np.dot(self.w2,self.x2)
+        self.y2 = sigmoid(self.a2)
+        bias = np.ones((1,self.y2.shape[1]), dtype=x.dtype)
+        self.x3 = np.r_[bias,self.y2]
+        assert self.x3.shape[0] == self.w3.shape[1], "w2 size error!"
+        self.a3 =  np.dot(self.w3, self.x3) 
+        self.y3 = sigmoid(self.a3)
+        
+        temp = self.y3
+        self.x1, self.a1, self.y1, self.x2, self.a2, self.y2, self.x3, self.a3, self.y3 = x1_t, a1_t, y1_t, x2_t, a2_t, y2_t, x3_t, a3_t, y3_t
+        
+        return temp
 
     def backward(self, t, learning_rate=None):
         if learning_rate != None:
