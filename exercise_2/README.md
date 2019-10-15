@@ -6,6 +6,8 @@ This is the illustrative document for exercise 2 of Machine Learning Course.
 
 - files
 - network
+- environment
+- run
 
 ---
 
@@ -28,7 +30,9 @@ This is the illustrative document for exercise 2 of Machine Learning Course.
 7. Preprocessing dataset files
    1. *unquoted_(train_10gene/train_10gene_sub/train_lable/train_label_sub/test_10gene/test_label/test2_10gene/test2_label).csv*
    2. *transposed_unquoted_(train_10gene/train_10gene_sub/train_lable/train_label_sub/test_10gene/test_label/test2_10gene/test2_label).csv*
-8. README.md
+8. *lr_train_1/2_test_1/2(_e300).log* - train log files
+9. *lr_train_1/2_test_1/2(_e300).png* - screenshot files
+10. README.md
 
 ---
 
@@ -71,3 +75,19 @@ Adjust $\rm w_3, w_2,$and $\rm w1 $.
 ##### The test function
 
 Same as the forward function except that no self data is changed.
+
+---
+
+### Programming environment
+
+Python 3.7.x(stable), Numpy, Pandas
+
+---
+
+### How to run the code
+
+1. open *MLP\_with\_BP.py*
+2. search for "train_data" (or train\_target, test\_data, test\_target, learning\_rate, epochs) to locate the main code block at the end
+3. change the setting with new ones
+4. run *MLP\_with\_BP.py*
+5. NOTE: when warning info "parell table not identical" appears, please run the code again

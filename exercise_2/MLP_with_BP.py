@@ -4,7 +4,7 @@ from utils import *
 from network import MLP
 
 
-def train(train_data, train_target, test_data, test_target, learning_rate=0.1, epochs=1000):
+def train(train_data, train_target, test_data, test_target, learning_rate=0.1, epochs=1000, file_name=None):
     bpn = MLP(input_size=10,output_size=2,hidden_size_1=40,hidden_size_2=20,learning_rate=learning_rate)
     # x = np.array([1.52101,13.64,4.49,1.1,71.78,0.06,8.75,0,0], dtype=np.float64).reshape(-1,1)
     # print(bpn.forward(x))
@@ -38,55 +38,56 @@ def train(train_data, train_target, test_data, test_target, learning_rate=0.1, e
     errors = []
     accuracies_of_vali = []
     accuracies_of_test = []
-    for e in range(epochs):
-        correct_cnt_train = 0
-        for i in range(traininput.shape[1]):
+    with open(file_name + '.log', 'w+') as file:
+        for e in range(epochs):
+            correct_cnt_train = 0
+            for i in range(traininput.shape[1]):
 
-            out = bpn.forward(traininput[:,i:i+1])
-            bpn.backward(traintarget[:,i:i+1], learning_rate=1-0.1*e/epochs)
-            if np.argmax(out) == np.argmax(traintarget[:,i:i+1]):
-                correct_cnt_train += 1
-        if e % 50 == 0:
-            print("accuracy of trainset = {}".format(correct_cnt_train/traininput.shape[1]))
-        error = 0
-        correct_cnt = 0
-        for i in range(validationinput.shape[1]):
-            out = bpn.forward(validationinput[:,i:i+1])
-            error += np.sum(np.abs(out-validationtarget[:,i:i+1]) )
-            if np.argmax(out) == np.argmax(validationtarget[:,i:i+1]):
-                correct_cnt += 1
-        # print("error = {}".format(error))
-        errors.append(error)
-        accuracy = correct_cnt/validationinput.shape[1]
-        if e % 50 == 0:
-            print("accuracy of validationset = {}".format(accuracy))
-        accuracies_of_vali.append(accuracy) 
-        # if accuracy > 0.78:
-        #     break
-        test_correct_cnt = 0
-        for i in range(testinput.shape[1]):
-            out = bpn.test(testinput[:,i:i+1])
-            if np.argmax(out) == np.argmax(testtarget[:,i:i+1]):
-                # print(np.argmax(out))
-                test_correct_cnt += 1
-        accuracy = test_correct_cnt/testinput.shape[1]
-        if e % 50 == 0:
-            print("accuracy of test = {}".format(accuracy))
-        accuracies_of_test.append(accuracy) 
-    # print("max accuracy of validation set is {}".format(max(accuracies_of_vali)))
-    # x = range(len(accuracies_of_vali))
-    # y = accuracies_of_vali
-    # print(min(y))
-    # plt.plot(x,y)
-    # plt.savefig('lr_train_1_test_1' + (str)(learning_rate) + '.png')
-    # plt.show()
+                out = bpn.forward(traininput[:,i:i+1])
+                bpn.backward(traintarget[:,i:i+1], learning_rate=1-0.1*e/epochs)
+                if np.argmax(out) == np.argmax(traintarget[:,i:i+1]):
+                    correct_cnt_train += 1
+            if e % 50 == 0:
+                file.write("train accuracy = {}".format(correct_cnt_train/traininput.shape[1]) + '\n')
+            error = 0
+            correct_cnt = 0
+            for i in range(validationinput.shape[1]):
+                out = bpn.forward(validationinput[:,i:i+1])
+                error += np.sum(np.abs(out-validationtarget[:,i:i+1]) )
+                if np.argmax(out) == np.argmax(validationtarget[:,i:i+1]):
+                    correct_cnt += 1
+            # print("error = {}".format(error))
+            errors.append(error)
+            accuracy = correct_cnt/validationinput.shape[1]
+            if e % 50 == 0:
+                file.write("cross-validation accuracy = {}".format(accuracy) + '\n')
+            accuracies_of_vali.append(accuracy) 
+            # if accuracy > 0.78:
+            #     break
+            test_correct_cnt = 0
+            for i in range(testinput.shape[1]):
+                out = bpn.test(testinput[:,i:i+1])
+                if np.argmax(out) == np.argmax(testtarget[:,i:i+1]):
+                    # print(np.argmax(out))
+                    test_correct_cnt += 1
+            accuracy = test_correct_cnt/testinput.shape[1]
+            if e % 50 == 0:
+                file.write("test accuracy= {}".format(accuracy) + '\n')
+            accuracies_of_test.append(accuracy) 
+        # print("max accuracy of validation set is {}".format(max(accuracies_of_vali)))
+        # x = range(len(accuracies_of_vali))
+        # y = accuracies_of_vali
+        # print(min(y))
+        # plt.plot(x,y)
+        # plt.savefig('lr_train_1_test_1' + (str)(learning_rate) + '.png')
+        # plt.show()
 
-    x = range(len(accuracies_of_test))
-    y = accuracies_of_test
-    # print(min(y))
-    plt.plot(x,y)
-    plt.savefig('lr_train_2_test_2_e300' + '.png')
-    plt.show()
+        x = range(len(accuracies_of_test))
+        y = accuracies_of_test
+        # print(min(y))
+        plt.plot(x,y)
+        plt.savefig(file_name + '.png')
+        plt.show()
 
 if __name__ == '__main__':
     train(
@@ -99,7 +100,8 @@ if __name__ == '__main__':
         test_data=transpose(unquote('test2_10gene.csv')),            # testset-2
         test_target=unquote('test2_label.csv'),
         learning_rate=0.0001,
-        epochs=300
+        epochs=60,
+        file_name='lr_train_2_test_2'
     )
     # train_target = 'train_10gene_label_sub.csv'
     # train_data   = transpose('train_10gene_sub.csv')
