@@ -28,3 +28,12 @@ def report(w, b, epochs, error, i):
     print('learning rate:\n  ' + (str)(1.0 - error / epochs))
     print('w:            \n  ' + (str)(w))
     print('b:            \n  ' + (str)(b))
+
+
+def test(w, b, test_data, test_target, test_error, test_time):
+    for data, target in zip(test_data, test_target):
+        if (np.dot(w, data) + b) * target <= 0:
+            test_error += 1
+        test_time += 1
+    return test_error, test_time
+        

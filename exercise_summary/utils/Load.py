@@ -44,5 +44,9 @@ def __test(file_path):
 if __name__ == '__main__':
     file_path_1 = r'data\train_1_target.csv'
     file_path_2 = r'data\train_1_data.csv'
+    file_path_3 = r'data\test_1_target.csv'
+    file_path_4 = r'data\test_1_data.csv'
     __test(file_path_1)
     __test(file_path_2)
+    __test(file_path_3)
+    __test(file_path_4)

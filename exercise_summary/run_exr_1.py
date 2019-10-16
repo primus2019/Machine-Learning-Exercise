@@ -15,8 +15,14 @@ def run(
     train_target = set_targets(train_target)
     train_data = scale(train_data, -1, 1)
 
+    test_data, test_data_idx, test_data_col       = load_dataset(test_data_path)
+    test_target, test_target_idx, test_target_col = load_dataset(test_target_path, test_data_idx)
+    info(test_data, test_data_idx, test_data_col, test_target, False)
+    test_target = set_targets(test_target)
+    test_data = scale(test_data, -1, 1)
+
     w, b = initialize(train_data_col.shape[0])
-    train_error, train_time, train_accuracies, test_accuracies = 0.0, 0.0, [], []
+    train_error, test_error, train_time, test_time, train_accuracies, test_accuracies = 0.0, 0.0, 0.0, 0.0, [], []
     all_classified = ''
     for i in range(epochs):
         temp = train_error
@@ -26,7 +32,8 @@ def run(
                 train_error += 1
             train_time += 1
         train_accuracies.append(1 - train_error / train_time)
-        test_accuracies.append(1 - test_error / test_size)
+        test_error, test_time = test(w, b, test_data, test_target, test_error, test_time)
+        test_accuracies.append(1 - test_error / test_time)
 
         if i % 300 == 0:
             report(w, b, train_time, train_error, i)
@@ -39,38 +46,58 @@ def run(
         #     report(w, b, train_time, train_error)
         #     break
     
+
+    x_axis_len = max(len(train_accuracies), len(test_accuracies))
+    # plt.axis(xmin=0, xmax=epochs)
+    plt.title('accuracies' + all_classified) ### notice
+
     x = range(len(train_accuracies))
     y = train_accuracies
-    max_acc = max(train_accuracies)
-    plt.plot(x,y)
-    plt.title('train accuracies' + all_classified)
-    plt.text(100, max_acc - 0.01, 'max traning accuracy: ' + (str)(max(train_accuracies)))
-    plt.text(100, max_acc - 0.02, train_data_path)
-    plt.text(100, max_acc - 0.03, train_target_path)
+    plt.plot(y, label='train_acc')
+    
+    x = range(len(test_accuracies))
+    y = test_accuracies
+    plt.plot(y, label='test_acc')
+
+    plt.text(x_axis_len / 5, 0.9 - 0.01, 'max train accuracy: ' + (str)(max(train_accuracies)))
+    plt.text(x_axis_len / 5, 0.9 - 0.02, train_data_path)
+    plt.text(x_axis_len / 5, 0.9 - 0.03, train_target_path)
+    # if fixed_increment:
+    #     plt.savefig(r'result\f_'+ file_name + '_lr' + (str)(learning_rate) + '_e' + (str)(epochs) + '.png')
+    # else:
+    #     plt.savefig(r'result\v_'+ file_name + '_lr' + (str)(learning_rate) + '_e' + (str)(epochs) + '.png')
+    # plt.show()
+    plt.text(x_axis_len / 5, 0.9 - 0.04, 'max test accuracy: ' + (str)(max(test_accuracies)))
+    plt.text(x_axis_len / 5, 0.9 - 0.05, test_data_path)
+    plt.text(x_axis_len / 5, 0.9 - 0.06, test_target_path)
+    plt.legend(loc='lower right')
+
     if fixed_increment:
-        plt.savefig('result/f_'+ file_name + '_lr' + (str)(learning_rate) + '_e' + (str)(epochs) + '.png')
+        plt.savefig(r'result\f_'+ file_name + '_lr' + (str)(learning_rate) + '_e' + (str)(epochs) + '.png')
     else:
-        plt.savefig('result/v_'+ file_name + '_lr' + (str)(learning_rate) + '_e' + (str)(epochs) + '.png')
-    plt.show()
+        plt.savefig(r'result\v_'+ file_name + '_lr' + (str)(learning_rate) + '_e' + (str)(epochs) + '.png')
+        
+    plt.close()
 
 
 if __name__ == '__main__':
-    train_data_path   = r'data\train_1_data.csv'            # trainset-1
-    train_target_path = r'data\train_1_target.csv'
-    # train_data_path   = r'data\train_2_data.csv'            # trainset-2
-    # train_target_path = r'data\train_2_target.csv'
-    test_data_path    = r'data\test_1_data.csv'             # testset-1
-    test_target_path  = r'data\test_1_target.csv'
-    # test_data_path    = r'data\test_2_data.csv'             # testset-2
-    # test_target_path  = r'data\test_2_target.csv'
+    # train_data_path   = r'data\train_1_data.csv'            # trainset-1
+    # train_target_path = r'data\train_1_target.csv'
+    train_data_path   = r'data\train_2_data.csv'            # trainset-2
+    train_target_path = r'data\train_2_target.csv'
+    # test_data_path    = r'data\test_1_data.csv'             # testset-1
+    # test_target_path  = r'data\test_1_target.csv'
+    test_data_path    = r'data\test_2_data.csv'             # testset-2
+    test_target_path  = r'data\test_2_target.csv'
+    file_name = 'tr2_te2'
     run(
         train_data_path=train_data_path,
         train_target_path=train_target_path,
         test_data_path=test_data_path,
         test_target_path=test_target_path,
         learning_rate=0.001,
-        epochs=300,
-        file_name='tr1_te1',
+        epochs=100,
+        file_name=file_name,
         fixed_increment=True
     )
     run(
@@ -80,7 +107,7 @@ if __name__ == '__main__':
         test_target_path=test_target_path,
         learning_rate=0.001,
         epochs=500,
-        file_name='tr1_te1',
+        file_name=file_name,
         fixed_increment=True
     )
     run(
@@ -89,8 +116,8 @@ if __name__ == '__main__':
         test_data_path=test_data_path,
         test_target_path=test_target_path,
         learning_rate=0.1,
-        epochs=300,
-        file_name='tr1_te1',
+        epochs=100,
+        file_name=file_name,
         fixed_increment=False
     )
     run(
@@ -100,6 +127,6 @@ if __name__ == '__main__':
         test_target_path=test_target_path,
         learning_rate=0.1,
         epochs=500,
-        file_name='tr1_te1',
+        file_name=file_name,
         fixed_increment=False
     )
