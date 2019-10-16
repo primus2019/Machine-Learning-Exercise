@@ -18,7 +18,7 @@ def load_dataset(file_path, test_indices=None):
         train_data = train_data.T
     indices = train_data.index.values
     columns = train_data.columns.values
-    train_data = train_data.T.to_numpy()
+    train_data = train_data.to_numpy()
     if test_indices is not None:
         assert (test_indices == indices).all(), 'indices of data ' + (str)(test_indices.shape) + ' and target set ' + (str)(indices.shape) + ' are not identical'
     return train_data, indices, columns
@@ -28,8 +28,8 @@ def set_targets(dataset_target):
     dataset_target_unique = np.squeeze(np.unique(dataset_target))
     print('mapping table: ')
     for idx, target in enumerate(dataset_target_unique):
-        print('[' + (str)(idx) + ',' + (str)(target) + ']')
-    return np.stack((np.where(dataset_target_unique==target)[0][0] for target in dataset_target[0]))
+        print('[' + (str)(idx * 2 - 1) + ',' + (str)(target) + ']')
+    return np.stack([(2 * np.where(dataset_target_unique==target[0])[0][0] - 1) for target in dataset_target])
 
 
 def __test(file_path):
