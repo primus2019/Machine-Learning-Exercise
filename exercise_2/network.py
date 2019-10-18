@@ -79,10 +79,10 @@ class MLP:
         self.dw2 = tmp2 * da2dw2 
 
         da2dx2 = self.w2 
-        da2dy1 = da2dx2[:,1:] 
+        da2dy1 = da2dx2[:,1:]
         dy1da1 = self.y1 * (1 - self.y1) 
         da1dw1 = self.x1.T 
-        self.dw1 = np.sum( tmp2 * da2dy1, axis=0, keepdims=True).T * dy1da1 * da1dw1 
+        self.dw1 = np.sum( tmp2 * da2dy1, axis=0, keepdims=True).T * dy1da1 * da1dw1
 
 
         

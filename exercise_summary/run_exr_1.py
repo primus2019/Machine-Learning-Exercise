@@ -25,23 +25,23 @@ def run(
     train_error, test_error, train_time, test_time, train_accuracies, test_accuracies = 0.0, 0.0, 0.0, 0.0, [], []
     all_classified = ''
     for i in range(epochs):
-        temp = train_error
+        train_error, train_time = 0, 0
         for data, target in zip(train_data, train_target):
-            w, b, error = train(data, target, w, b, i, learning_rate, True)
+            w, b, error = perceptron(data, target, w, b, i, learning_rate, True)
             if error:
                 train_error += 1
             train_time += 1
         train_accuracies.append(1 - train_error / train_time)
-        test_error, test_time = test(w, b, test_data, test_target, test_error, test_time)
+        test_error, test_time = test(w, b, test_data, test_target)
         test_accuracies.append(1 - test_error / test_time)
 
         if i % 300 == 0:
             report(w, b, train_time, train_error, i)
             # add test acc to report
-        if temp == train_error:
-            all_classified = ' all_classified'
-            report(w, b, train_time, train_error, i)
-            break
+        # if train_error == 0:
+        #     all_classified = ' (all classified)'
+        #     report(w, b, train_time, train_error, i)
+        #     break
         # if train_error / train_time < 0.05:
         #     report(w, b, train_time, train_error)
         #     break

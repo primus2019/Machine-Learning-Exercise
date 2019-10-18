@@ -39,6 +39,7 @@ def run(train_data, train_target, test_data, test_target, core_function, epochs=
     print(pdata.shape[0])
     print(ptarget.shape)
     assert parell_table == parell_table_test, "parell table not identical"
+    
     for e in range(epochs):
         clf = SVC(kernel=core_function)
         tmp = list(zip(pdata, ptarget))
