@@ -1,5 +1,6 @@
+# shuffle of trainset may be good!
+
 import random
-import time
 
 import pandas as pd
 import numpy as np
