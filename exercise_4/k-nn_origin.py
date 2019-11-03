@@ -9,15 +9,15 @@ import numpy as np
 from utils import Load, Preprocess, Log, Graph
 
 
-filename = 'o_tr2_te2'                          # 'tr': train; 'te': test; '1': small; '2': large
-graph_name = 'knn in large trainset & large testset'
+filename = 'knn-o-tr1-te2'                          # 'tr': train; 'te': test; '1': small; '2': large
+graph_name = 'knn in small trainset & large testset'
                                                 # naming graphs
-train_sample = r'dataset/train_sample.csv'      # small trainset
-train_label  = r'dataset/train_label.csv'       # small trainset
-train_sample = r'dataset/train2_sample.csv'     # large trainset
-train_label  = r'dataset/train2_label.csv'      # large trainset
-test_sample  = r'dataset/test_sample.csv'       # small testset
-test_label   = r'dataset/test_label.csv'        # small testset
+train_sample = r'dataset/train1_sample.csv'      # small trainset
+train_label  = r'dataset/train1_label.csv'       # small trainset
+# train_sample = r'dataset/train2_sample.csv'     # large trainset
+# train_label  = r'dataset/train2_label.csv'      # large trainset
+# test_sample  = r'dataset/test1_sample.csv'       # small testset
+# test_label   = r'dataset/test1_label.csv'        # small testset
 test_sample  = r'dataset/test2_sample.csv'      # large testset
 test_label   = r'dataset/test2_label.csv'       # large testset
 

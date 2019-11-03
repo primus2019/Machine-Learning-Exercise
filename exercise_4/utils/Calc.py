@@ -1,5 +1,4 @@
 import random
-import time
 import uuid
 
 import numpy as np
@@ -19,6 +18,7 @@ def CART(train_sample, train_index, variable_error_weights, threshold, step=40):
 
     random.seed(uuid.uuid4().hex)
     position = random.randint(0, label_size - 1)
+    print('original position: {}'.format(position))
     weights = random.random() * 2 - 1
 
     Log.defaultLog('try the weight on {}'.format(position))
@@ -74,7 +74,7 @@ def CART(train_sample, train_index, variable_error_weights, threshold, step=40):
                 Log.defaultLog('error_rate: {}'.format(error_rate))
                 if error_rate < threshold:
                     Log.defaultLog('get right CART: {} in {}'.format(weights, position))
-                    return round(weights, 3), position, error_positions
+                    return round(weights, 4), position, error_positions
                 else:
                     weights += 2.0 / step
             Log.defaultLog('--------------------------------')

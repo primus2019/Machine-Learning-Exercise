@@ -1,4 +1,3 @@
-import time
 import numpy as np
 import pandas as pd
 
@@ -16,16 +15,17 @@ train_label  = r'dataset/train2_label.csv'      # large trainset
 # test_label   = r'dataset/test1_label.csv'        # small testset
 test_sample  = r'dataset/test2_sample.csv'      # large testset
 test_label   = r'dataset/test2_label.csv'       # large testset
-M = 500                                         # number of weak classifiers
-thresh = 0.45                                   # threshold for CART as weak classifier
-CART_step = 10                                  # particle size of CART stumping, larger the smaller
+M = 100                                         # number of weak classifiers
+
+thresh = 0.40                                   # threshold for CART as weak classifier
+CART_step = 7                                  # number of steps in modifying CART stumping, negative to CART diversity
+hypervariant = 'thresh'
+hyperrange   = np.arange(0.30, 0.50, 0.01)
+
+filename = 'default'
 
 
-filename = 'rf_o_tr{}_te{}_M{}_thr{}_stp{}'.format(train_sample[13], test_sample[12], M, thresh, CART_step)
-                                                # 'tr': train; 'te': test; '1': small; '2': large
-
-
-def run(filename, train_sample, train_label, test_sample, test_label, title, M, thresh):
+def run(filename, train_sample, train_label, test_sample, test_label, title, M, thresh, CART_step):
     train_sample, train_sample_size = Load.loadSample(train_sample)  
     train_label,  train_label_size  = Load.loadLabel(train_label)
     assert train_sample_size == train_label_size, 'train_sample_size does not match train_label_size'
@@ -60,7 +60,7 @@ def run(filename, train_sample, train_label, test_sample, test_label, title, M, 
         # print('errors: {}'.format(errors))
         # print('sample_weights: {}'.format(sample_weights))
         # print('classifier_threshold: {} in {}'.format(threshold, position))
-        # print('total_error: {}'.format(total_error))
+        print('total_error: {}'.format(total_error))
         print('threshold_positions:   {}'.format(threshold_positions))
         print('classifier_thresholds: {}'.format(classifier_thresholds))
         print('classifier_weights:    {}'.format(classifier_weights))
@@ -80,27 +80,49 @@ def run(filename, train_sample, train_label, test_sample, test_label, title, M, 
                 test_corr += 1
         test_corrs.append(round(test_corr / test_size, 3))
         Log.log(filename, 'M: {}; correction: {}\n'.format(M, test_corrs[-1]))
-        print('-----------------{}-----------------'.format(i + 1))
-        time.sleep(1.0)
+        print('-----------------thresh: {}; CART_step: {}; iter: {}-----------------'.format(thresh, CART_step, i + 1))
         
 
     Graph.draw(filename, test_times, test_corrs, test_times[-1], 1.0, title)
     return test_corrs
 
 
+def setFileName():
+    return 'rf-{}/'.format(hypervariant) + 'rf-o-tr{}-te{}-M{}-thr{}-stp{}'.format(train_sample[13], test_sample[12], M, thresh, CART_step)
+                                                    # 'tr': train; 'te': test; '1': small; '2': large
+
 if __name__ == '__main__':
-    Log.clearDefaultLog()
-    Log.clearLog(filename)
+    rec    = []
+    maxi   = []
+    maxi_M = []
+    mini   = []
+    mini_M = []
+    avrg   = []
+    stdv   = []
+    # modify the variant after 'for'
+    for i, thresh in enumerate(hyperrange):
+        filename = setFileName()
+        Log.clearDefaultLog()
+        Log.clearLog(filename)
+        
+        rec.append(run(
+            filename,
+            train_sample,
+            train_label,
+            test_sample,
+            test_label,
+            title,
+            M,
+            thresh,
+            CART_step
+        ))
+        maxi.append(np.max(rec[-1]))
+        mini.append(np.min(rec[-1]))
+        maxi_M.append(np.argmax(rec[-1]))
+        mini_M.append(np.argmin(rec[-1]))
+        avrg.append(np.average(rec[-1]))
+        stdv.append(np.std(rec[-1], ddof=1))
+        Log.log(filename, 'max: {}; min: {}; max M: {}; min M: {}; avg: {}; std: {}'.format(maxi[-1], mini[-1], maxi_M[-1], mini_M[-1], avrg[-1], stdv[-1]))
 
-    rec = []
-
-    run(
-        filename,
-        train_sample,
-        train_label,
-        test_sample,
-        test_label,
-        title,
-        M,
-        thresh
-    )
+    Graph.drawHyper('hypervariant-maxM-{}-{}-{}'.format(hypervariant, hyperrange[0], hyperrange[-1]), hyperrange, maxi_M, title='max M when varying {}'.format(hypervariant))
+    Graph.drawHyper('hypervariant-maxCorr-{}-{}-{}'.format(hypervariant, hyperrange[0], hyperrange[-1]), hyperrange, maxi, title='max correction when varying {}'.format(hypervariant))
