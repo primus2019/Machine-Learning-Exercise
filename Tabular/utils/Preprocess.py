@@ -2,16 +2,30 @@ import pandas as pd
 import numpy as np
 import random
 
-
+## todo
 def transpose(ds_path, ds_t_path=False, largeset=False, encoding='utf-8', header=0, index_col=0):
     '''
     Params:
 
-    ds_path: str of dataset path
+    ds_path: str, dataset path
+
+    ds_t_path(default False): boolean, transposed dataset path
+    (should be different from ds_path)
+
+    largeset(default False): boolean, whether to apply low-memory method
+
+    encoding(default 'utf-8'): str, encoding of dataset
+
+    header(default 0): int/list of int, works on pandas.read_csv()
+    (learn more at: https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html)
+
+    index_col(default 0): int/list of int, works on pandas.read_csv()
+    (learn more at: https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html)
 
     Return: 
 
-    pd.Dataframe of newly transposed dataset
+    pd.Dataframe, newly transposed dataset
+
     '''
     assert ds_path != ds_t_path, 'You replace original dataset with processed one(s); assign processed one(s) to new position(s), or delete old dataset with delete.'
     if not largeset:
@@ -25,6 +39,33 @@ def transpose(ds_path, ds_t_path=False, largeset=False, encoding='utf-8', header
 
 
 def split(ds_path, ds_split_path, chunksize=None, fraction=None, shuffle=True, largeset=False, encoding='utf-8', header=0, index_col=0):
+    '''
+    Params:
+
+    ds_path: str, dataset path
+
+    ds_split_path: str/list of str, split dataset path(s)
+    (should be different from ds_path)
+
+    chunksize(default None): int, batch for split dataset(s)
+    (strictly one of chunksize and fraction should be valid)
+
+    fraction(default None): float, proportion for split dataset(s)
+    (strictly one of chunksize and fraction should be valid)
+
+    shuffle(default True): boolean, whether to randomly shuffle samples when splitting
+
+    largeset(default False): boolean, whether to apply low-memory method for splitting
+
+    encoding(default 'utf-8'): str, encoding of dataset
+
+    header(default 0): int/list of int, works on pandas.read_csv()
+    (learn more at: https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html)
+
+    index_col(default 0): int/list of int, works on pandas.read_csv()
+    (learn more at: https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html)
+
+    '''
     assert ds_path != ds_split_path, 'You replace original dataset with processed one(s); assign processed one(s) to new position(s), or delete old dataset with delete.'
     assert not (chunksize is not None and fraction is not None), 'One and only one of chunksize and fraction should be valid; both valid now.'
     assert chunksize or fraction, 'Only and only one of chunksize and fraction should be valid; both invalid now.'
