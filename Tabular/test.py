@@ -5,13 +5,15 @@ import pandas as pd
 import numpy as np
 
 def run():
-    feature_path = 'tmp/test1_feature_t.csv'
-    # Load.EDA(feature_path, 'feature')
+    feature_path = 'tmp/test2_feature_t.csv'
+    # EDA.EDA(feature_path, 'feature')
     # label_path = 'dataset/test1_label.csv'
     # Load.EDA(label_path, 'label')
-    print(EDA.sparse_feature(feature_path, threshold=0.5))
-    ds = pd.read_csv(feature_path, encoding='utf-8', header=0, index_col=0)
-
+    data_split_path = ['split/test2_feature_s_{}.csv'.format(i) for i in range(4)]
+    Preprocess.split(feature_path, data_split_path, fraction=80, largeset=True)
+    for data_split_item in data_split_path:
+        EDA.EDA(data_split_item, 'feature')
+    
 
 if __name__ == '__main__':
     run()
