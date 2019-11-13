@@ -9,6 +9,7 @@ __pycache__/
 # my project
 log/
 *.png
+*.csv
 
 # Distribution / packaging
 .Python
